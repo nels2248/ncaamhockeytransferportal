@@ -38,7 +38,7 @@ df_full['DESTINATION TEAM'] = df_full['DESTINATION TEAM'].fillna('TBD')
 df_full.reset_index(drop=True, inplace=True)
 
 # Create map
-m = folium.Map(location=[df_full['Lat 2024/25 TEAM'][0], df_full['Long 2024/25 TEAM'][0]], zoom_start=4)
+m = folium.Map(location=[39.8283, -98.5795], zoom_start=3)
 
 # Group messages by location
 marker_data = defaultdict(list)
