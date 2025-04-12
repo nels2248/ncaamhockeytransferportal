@@ -2,3 +2,4 @@ pandas
 folium
 datetime
 pytz
+openpyxl
