@@ -99,7 +99,7 @@ top_content = f"""
     <div style="font-size:12px; text-align:center; font-weight:bold; margin-bottom:10px;">
         Welcome to the NCAA 2025-26 NCAA Men's Ice Hockey Transfer Portal Map! This map shows player transfers between NCAA Mens Ice Hockey teams.
         <br>
-        Special Thanks to <a href='https://x.com/sydneyisawolf' target="_blank" >@sydneyisawolf</a> / <a href='https://x.com/CleanSheetHKY' target="_blank">@CleanSheetHKY</a> / <a href='https://www.cleansheethockey.com/' target="_blank">www.cleansheethockey.com</a>/
+        Special Thanks to <a href='https://x.com/sydneyisawolf' target="_blank" >@sydneyisawolf</a> / <a href='https://x.com/CleanSheetHKY' target="_blank">@CleanSheetHKY</a> / <a href='https://www.cleansheethockey.com/' target="_blank">www.cleansheethockey.com</a> for providing data for this.  
         <br>
         <p style='text-align:center; font-size:12px;'>Last Updated: {now_central} (Central Time)</p>
     </div>
