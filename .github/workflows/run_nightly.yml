@@ -25,7 +25,7 @@ jobs:
 
     - name: Run the Python script
       run: |
-        python your_script.py  # Replace with the actual filename of your script
+        python main.py  # Replace with the actual filename of your script
 
     - name: Commit and push generated files
       run: |
