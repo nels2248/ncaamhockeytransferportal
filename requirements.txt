@@ -1,5 +1,4 @@
 pandas
 folium
-collections
 datetime
 pytz
