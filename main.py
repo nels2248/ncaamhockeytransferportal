@@ -97,7 +97,7 @@ now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 # Prepare your top and bottom content
 top_content = f"""
     <div style="font-size:12px; text-align:center; font-weight:bold; margin-bottom:10px;">
-        Welcome to the NCAA 2025-26 NCAA Men's Ice Hockey Transfer Portal Map! This map shows player transfers between NCAA Mens Ice Hockey teams.
+        Welcome to the NCAA 2025-26 NCAA Men's Ice Hockey Transfer Portal Map! This map shows player transfers between NCAA Mens Ice Hockey teams.  Click a team logo to see players arriving or leaving each team.  
         <br>
         Special Thanks to <a href='https://x.com/sydneyisawolf' target="_blank" >@sydneyisawolf</a> / <a href='https://x.com/CleanSheetHKY' target="_blank">@CleanSheetHKY</a> / <a href='https://www.cleansheethockey.com/' target="_blank">www.cleansheethockey.com</a> for providing data for this.  
         <br>
