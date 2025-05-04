@@ -74,7 +74,6 @@ for location, messages in marker_data.items():
     else:
         # Optional: fallback to a default icon if image not found
         icon = folium.DivIcon(html='<div style="font-size: 24px; color: black;">❓</div>')
-    
     folium.Marker(
         location=location,
         popup=folium.Popup(popup_html, max_width=300),
