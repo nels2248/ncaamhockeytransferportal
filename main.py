@@ -15,25 +15,29 @@ import pytz
  
 
 #df_transfers = pd.read_excel("Division I NCAA Men's Portal 2025.xlsx")
-df_transfers = pd.read_csv("https://docs.google.com/spreadsheets/d/10YakMFgL26THDHzK7pn688RYimMofcmUwGQNpTzs1Hc/export?format=csv&gid=0")
-df_schoollatlongs = pd.read_excel("NCAASchoolLatLong.xlsx")
-df_transfers = df_transfers.dropna(subset=['Player'])
+url = "https://docs.google.com/spreadsheets/d/1ZMgAFehVLUsOd-KEgQKgljeBk7pDN3PWdFnGC8o1x18/export?format=csv&gid=0"
+
+df_transfers = pd.read_csv(url)
+print('able to read')
+df_schoollatlongs = pd.read_excel("NCAASchoolLatLong.xlsx") 
+df_transfers = df_transfers.dropna(subset=['PLAYER']) 
+print(df_transfers)
 
 # Join lat/longs
-df_full = pd.merge(df_transfers, df_schoollatlongs, left_on='2024/25 TEAM', right_on='Team', how='left')
+df_full = pd.merge(df_transfers, df_schoollatlongs, left_on='2025-26 TEAM', right_on='Team', how='left')
 df_full = pd.merge(df_full, df_schoollatlongs, left_on='DESTINATION TEAM', right_on='Team', how='left')
 
 # Rename columns
 df_full.rename(columns={
-    'Lat_x': 'Lat 2024/25 TEAM',
-    'Long_x': 'Long 2024/25 TEAM',
+    'Lat_x': 'Lat 2025-26 TEAM',
+    'Long_x': 'Long 2025-26 TEAM',
     'Lat_y': 'Lat DESTINATION TEAM',
     'Long_y': 'Long DESTINATION TEAM',
-    'Player': 'Player Name'
+    'PLAYER': 'Player Name'
 }, inplace=True)
 
 # Select necessary columns
-df_full = df_full[['Player Name', '2024/25 TEAM', 'Lat 2024/25 TEAM', 'Long 2024/25 TEAM',
+df_full = df_full[['Player Name', '2025-26 TEAM', 'Lat 2025-26 TEAM', 'Long 2025-26 TEAM',
                    'DESTINATION TEAM', 'Lat DESTINATION TEAM', 'Long DESTINATION TEAM']]
 
 # Fill and reset
@@ -46,17 +50,17 @@ m = folium.Map(location=[39.8283, -98.5795], zoom_start=3)
 # Group messages by location
 marker_data = defaultdict(list)
 for _, row in df_full.iterrows():
-    from_loc = (row['Lat 2024/25 TEAM'], row['Long 2024/25 TEAM'])
+    from_loc = (row['Lat 2025-26 TEAM'], row['Long 2025-26 TEAM'])
     marker_data[from_loc].append(f"{row['Player Name']} → {row['DESTINATION TEAM']}")
     
     if row['DESTINATION TEAM'] != 'TBD' and pd.notna(row['Lat DESTINATION TEAM']) and pd.notna(row['Long DESTINATION TEAM']):
         to_loc = (row['Lat DESTINATION TEAM'], row['Long DESTINATION TEAM'])
-        marker_data[to_loc].append(f"{row['Player Name']} ← {row['2024/25 TEAM']}")
+        marker_data[to_loc].append(f"{row['Player Name']} ← {row['2025-26 TEAM']}")
 
 # Map team to location
 team_lookup = {}
 for _, row in df_full.iterrows():
-    team_lookup[(row['Lat 2024/25 TEAM'], row['Long 2024/25 TEAM'])] = row['2024/25 TEAM']
+    team_lookup[(row['Lat 2025-26 TEAM'], row['Long 2025-26 TEAM'])] = row['2025-26 TEAM']
     if row['DESTINATION TEAM'] != 'TBD' and pd.notna(row['Lat DESTINATION TEAM']) and pd.notna(row['Long DESTINATION TEAM']):
         team_lookup[(row['Lat DESTINATION TEAM'], row['Long DESTINATION TEAM'])] = row['DESTINATION TEAM']
 
