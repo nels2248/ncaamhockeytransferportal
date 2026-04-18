@@ -21,6 +21,10 @@ df_transfers = pd.read_csv(url)
 print('able to read')
 df_schoollatlongs = pd.read_excel("NCAASchoolLatLong.xlsx") 
 df_transfers = df_transfers.dropna(subset=['PLAYER']) 
+
+df_transfers["2025-26 TEAM"] = df_transfers["2025-26 TEAM"].str.rstrip()
+df_transfers["DESTINATION TEAM"] = df_transfers["DESTINATION TEAM"].str.rstrip()
+
 print(df_transfers)
 
 # Join lat/longs
