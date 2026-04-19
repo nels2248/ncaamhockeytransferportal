@@ -64,81 +64,42 @@ for _, row in df_full.iterrows():
 
     from_loc = (row["Lat 2025-26 TEAM"], row["Long 2025-26 TEAM"])
 
-    # =================================================
+    # -------------------------------------------------
     # OUTGOING (RED)
-    # ICON far LEFT | TEAM .... PLAYER RIGHT
-    # =================================================
+    # -------------------------------------------------
     if to_team != "TBD":
         dest_icon_path = f"images/{to_team}.gif"
-
-        team_icon = (
+        dest_icon = (
             f"<img src='{dest_icon_path}' width='18' height='18'>"
             if os.path.isfile(dest_icon_path)
             else "❓"
         )
     else:
-        team_icon = "❓"
+        dest_icon = "❓"
 
     marker_data[from_loc]["outgoing"].append(
-        f"""
-        <div style='color:red; margin-bottom:2px; display:flex;
-                    justify-content:space-between; align-items:center; width:100%;'>
-            
-            <span style='width:22px; text-align:left;'>
-                {team_icon}
-            </span>
-
-            <span style='flex-grow:1; padding-left:6px;'>
-                {to_team}
-            </span>
-
-            <span style='text-align:right;'>
-                {player}
-            </span>
-
-        </div>
-        """
+        (from_team, player, to_team, dest_icon)
     )
 
-    # =================================================
+    # -------------------------------------------------
     # INCOMING (GREEN)
-    # PLAYER LEFT .... TEAM | ICON far RIGHT
-    # =================================================
+    # -------------------------------------------------
     if (
         to_team != "TBD"
         and pd.notna(row["Lat DESTINATION TEAM"])
         and pd.notna(row["Long DESTINATION TEAM"])
     ):
-
         to_loc = (row["Lat DESTINATION TEAM"], row["Long DESTINATION TEAM"])
 
         source_icon_path = f"images/{from_team}.gif"
-
-        team_icon = (
+        source_icon = (
             f"<img src='{source_icon_path}' width='18' height='18'>"
             if os.path.isfile(source_icon_path)
             else "❓"
         )
 
         marker_data[to_loc]["incoming"].append(
-            f"""
-            <div style='color:green; margin-bottom:2px; display:flex;
-                        justify-content:space-between; align-items:center; width:100%;'>
-
-                <span>
-                    {player}
-                </span>
-
-                <span style='flex-grow:1; text-align:right; padding-right:6px;'>
-                    {from_team}
-                </span>
-
-                <span style='width:22px; text-align:right;'>
-                    {team_icon}
-                </span>
-
-            </div>
-            """
+            (player, from_team, to_team, source_icon)
         )
 
 # -------------------------------------------------
@@ -147,10 +108,7 @@ for _, row in df_full.iterrows():
 team_lookup = {}
 
 for _, row in df_full.iterrows():
-
-    team_lookup[
-        (row["Lat 2025-26 TEAM"], row["Long 2025-26 TEAM"])
-    ] = row["2025-26 TEAM"]
+    team_lookup[(row["Lat 2025-26 TEAM"], row["Long 2025-26 TEAM"])] = row["2025-26 TEAM"]
 
     if (
         row["DESTINATION TEAM"] != "TBD"
@@ -162,47 +120,91 @@ for _, row in df_full.iterrows():
         ] = row["DESTINATION TEAM"]
 
 # -------------------------------------------------
-# Add markers
+# Build markers
 # -------------------------------------------------
 for location, data in marker_data.items():
 
     team_name = team_lookup.get(location, "Team")
 
-    incoming = sorted(data["incoming"])
-    outgoing = sorted(data["outgoing"])
-
-    message_html = (
-        "".join(incoming)
-        + "<hr style='margin:3px 0;'>"
-        + "".join(outgoing)
+    self_icon_path = f"images/{team_name}.gif"
+    self_icon = (
+        f"<img src='{self_icon_path}' width='18' height='18'>"
+        if os.path.isfile(self_icon_path)
+        else "❓"
     )
 
+    incoming_html = ""
+    for player, from_team, to_team, icon in sorted(data["incoming"]):
+        incoming_html += f"""
+        <div style='color:green; margin-bottom:2px; display:flex;
+                    align-items:center; width:100%;'>
+
+            <span style='width:20px;"'>{self_icon}</span>
+
+            <span style=' padding-left:6px;'>
+                {player}
+            </span>
+
+            <span style='padding-left:6px;text-align:center;'>
+            {from_team}
+            </span>
+
+            <span style='width:20px;opacity:0.5; text-align:right;'>
+                {icon}
+            </span>
+
+        </div>
+        """
+
+    outgoing_html = ""
+    for from_team, player, to_team, icon in sorted(data["outgoing"]):
+        outgoing_html += f"""
+        <div style='color:red; margin-bottom:2px; display:flex;
+                    align-items:center; width:100%;'>
+
+            <span style='width:20px;opacity:0.5;'>{self_icon}</span>
+
+            <span style=' padding-left:6px;'>
+                {player} 
+            </span>
+
+            <span style='padding-left:6px;text-align:center;'>
+              {to_team}
+            </span>
+
+            <span style='width:20px; text-align:right;'>
+                {icon}
+            </span>
+
+        </div>
+        """
+
     popup_html = f"""
-    <div style='font-size:14px; min-width:340px;'>
+    <div style='font-size:14px; min-width:275px;'>
         <strong style='font-size:16px;'>{team_name}</strong><br>
-        <span style='color:green;'>Incoming: {len(incoming)}</span><br>
-        <span style='color:red;'>Outgoing: {len(outgoing)}</span>
+        <span style='color:green;'>Incoming: {len(data["incoming"])}</span><br>
+        <span style='color:red;'>Outgoing: {len(data["outgoing"])}</span>
         <hr style='margin:4px 0;'>
-        {message_html}
+        {incoming_html}
+        <hr style='margin:3px 0;'>
+        {outgoing_html}
     </div>
     """
 
     icon_path = f"images/{team_name}.gif"
 
-    if os.path.isfile(icon_path):
-        icon = CustomIcon(icon_image=icon_path, icon_size=(40, 40))
-    else:
-        icon = folium.DivIcon(html="<div style='font-size:24px;'>❓</div>")
+    icon = (
+        CustomIcon(icon_image=icon_path, icon_size=(40, 40))
+        if os.path.isfile(icon_path)
+        else folium.DivIcon(html="<div style='font-size:24px;'>❓</div>")
+    )
 
     folium.Marker(
         location=location,
-        popup=folium.Popup(popup_html, max_width=430),
+        popup=folium.Popup(popup_html, max_width=520),
         icon=icon
     ).add_to(m)
 
-# -------------------------------------------------
-# Save
-# -------------------------------------------------
 m.save("index.html")
 
 # Set Central Time Zone (US/Central)
